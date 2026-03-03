@@ -1,0 +1,108 @@
+{
+  "closeable_types": [
+    "InputStream",
+    "OutputStream",
+    "Reader",
+    "Writer",
+    "BufferedReader",
+    "BufferedWriter",
+    "FileInputStream",
+    "FileOutputStream",
+    "FileReader",
+    "FileWriter",
+    "RandomAccessFile",
+    "Scanner",
+    "ZipInputStream",
+    "ZipOutputStream",
+    "JarFile",
+    "JarInputStream",
+    "JarOutputStream",
+    "Stream",
+    "IntStream",
+    "LongStream",
+    "DoubleStream",
+    "Connection",
+    "Statement",
+    "PreparedStatement",
+    "CallableStatement",
+    "ResultSet"
+  ],
+  "close_methods": [
+    "close",
+    "closeQuietly",
+    "release",
+    "disconnect",
+    "shutdown",
+    "stop",
+    "dispose",
+    "destroy",
+    "cleanup"
+  ],
+  "factory_methods": [
+    "Files.newInputStream",
+    "Files.newOutputStream",
+    "Files.newBufferedReader",
+    "Files.newBufferedWriter",
+    "Files.newByteChannel",
+    "DriverManager.getConnection",
+    "DataSource.getConnection",
+    "Connection.prepareStatement",
+    "Connection.createStatement"
+  ],
+  "collection_source_methods": [
+    "add",
+    "addAll",
+    "put",
+    "putAll",
+    "offer",
+    "push",
+    "enqueue",
+    "append",
+    "computeIfAbsent",
+    "merge"
+  ],
+  "collection_sink_methods": [
+    "remove",
+    "removeAll",
+    "retainAll",
+    "clear",
+    "poll",
+    "pop",
+    "dequeue"
+  ],
+  "threadlocal_source_methods": [
+    "set"
+  ],
+  "threadlocal_sink_methods": [
+    "remove"
+  ],
+  "cache_source_methods": [
+    "put",
+    "putIfAbsent",
+    "set",
+    "add",
+    "replace"
+  ],
+  "cache_sink_methods": [
+    "invalidate",
+    "invalidateAll",
+    "evict",
+    "evictAll",
+    "remove",
+    "clear"
+  ],
+  "listener_source_methods": [
+    "addListener",
+    "addEventListener",
+    "register",
+    "registerListener",
+    "addObserver"
+  ],
+  "listener_sink_methods": [
+    "removeListener",
+    "removeEventListener",
+    "unregister",
+    "unregisterListener",
+    "removeObserver"
+  ]
+}

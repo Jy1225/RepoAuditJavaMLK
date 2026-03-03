@@ -1,0 +1,81 @@
+{
+  "model_role_name": "Path Validator",
+  "user_role_name": "Path Validator",
+  "system_role": "You are a Java programmer and very good at analyzing Java code. You focus on resource lifecycle and memory leak detection.",
+  "task": "You will be provided with an interprocedural data-flow path along with a specified <BUG_TYPE>. For MLK, decide whether the path represents a reachable memory leak (resource created/inserted without a reachable release/remove/clear on that path).",
+  "analysis_rules": [
+    "Keep the following guidelines in mind:",
+    "- For MLK detection, if a resource reaches a release/remove/clear point on the path, then the path is NOT a leak.",
+    "- try-with-resources implies automatic close; treat it as a release even if close() is not explicit.",
+    "- If a resource is returned or assigned to a field/static/global (ownership transfer), treat it as responsibility transfer and answer No (not a leak in this path), unless it is a long-lived container resource (collections/caches/listener registries/ThreadLocal).",
+    "- For container-style resources (collections, caches, listener registries, ThreadLocal), inserting into a field/static container is NOT a responsibility transfer; treat as leak if no remove/clear/removeListener/remove().",
+    "- Do NOT classify leaks based only on static/field/ClassLoader/inner-class retention patterns in this task. MLK_STATIC_CLASSLOADER_RETENTION is out of scope.",
+    "- For ThreadLocal, only remove() or set(null) is a release; set(...) alone is not a transfer.",
+    "- If the function exits or returns before any release/remove/clear on the path, then the path is a leak unless ownership is transferred.",
+    "- Analyze branch conditions inside each method and check for conflicts across sub-paths. If conflicts exist, the overall path is unreachable."
+  ],
+  "question_template": [
+    "When these functions are executed, does the following data-flow propagation path cause the <BUG_TYPE> bug?",
+    "```",
+    "<PATH>",
+    "```",
+    "Provide your detailed explanation for this propagation path:",
+    "<EXPLANATION>",
+    ""
+  ],
+  "analysis_examples": [
+    "Example 1:",
+    "User:",
+    "Here is the Java program:",
+    "```java",
+    "public void foo(String path) throws Exception {",
+    "    try (InputStream in = new FileInputStream(path)) {",
+    "        readAll(in);",
+    "    }",
+    "}",
+    "```",
+    "Does the following propagation path cause the MLK bug?",
+    "Propagation Path: 'in' at line 2 in foo",
+    "Explanation: The resource is declared in try-with-resources, which guarantees close(). Therefore the path is not a leak.",
+    "Answer: No.",
+    "",
+    "Example 2:",
+    "User:",
+    "Here is the Java program:",
+    "```java",
+    "public void bar(List<Object> cache, Object obj) {",
+    "    cache.add(obj);",
+    "}",
+    "```",
+    "Does the following propagation path cause the MLK bug?",
+    "Propagation Path: 'cache' at line 2 in bar",
+    "Explanation: The path inserts into the collection and no remove/clear occurs in the function. There is no transfer to a release. The path is reachable and indicates a leak risk.",
+    "Answer: Yes."
+  ],
+  "additional_fact": [
+    "Additional details may include whether specific lines fall within if-statements and the corresponding line numbers for those conditions.",
+    "For each line in the provided path, follow this reasoning:",
+    "- Indicate whether line {line_number} is inside the true or else branch of an if-statement.",
+    "- State whether, given the variable values, the branch condition will always be evaluated as true, always as false, or is indeterminate.",
+    "- Conclude whether line {line_number} is reachable.",
+    "After analyzing each line, decide if the overall path's condition is satisfiable (reachable) or not."
+  ],
+  "answer_format": [
+    "(1) In the first line, provide your detailed reasoning and explanation.",
+    "(2) In the second line, simply state Yes or No.",
+    "Example:",
+    "Explanation: {Your detailed explanation.}",
+    "Answer: Yes"
+  ],
+  "meta_prompts": [
+    "Now I will provide you with the program:",
+    "```",
+    "<PROGRAM>",
+    "```",
+    "Please answer the following question:",
+    "<QUESTION>",
+    "Your answer should follow this format:",
+    "<ANSWER>",
+    "Remember: Do not assume the behavior or return values of external methods not provided in the program. Only evaluate the conditions present in the given code."
+  ]
+}
